@@ -43,7 +43,7 @@ export default function SchemeDetailsPage() {
                 setIsLoading(true);
                 setError(null);
                 try {
-                    const response = await fetch(`/api/schemes/${id}`, {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api"}/schemes/${id}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
