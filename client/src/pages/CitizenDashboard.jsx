@@ -8,6 +8,7 @@ import SavedSchemes from "../components/dashboard/SavedSchemes";
 import ApplicationStatus from "../components/dashboard/ApplicationStatus";
 import RecentSearches from "../components/dashboard/RecentSearches";
 import FeedbackTab from "../components/dashboard/FeedbackTab";
+import NotificationsTab from "../components/dashboard/NotificationsTab";
 import DashboardSkeleton from "../components/dashboard/DashboardSkeleton";
 import DashboardError from "../components/dashboard/DashboardError";
 import { useDashboard } from "../hooks/useDashboard";

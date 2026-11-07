@@ -5,7 +5,7 @@ import Footer from "../components/layouts/Footer";
 import SchemeCard from "../components/ui/SchemeCard";
 import PolicyFilter from "../components/policies/PolicyFilter";
 import SchemeSearch from "../components/schemes/SchemeSearch";
-import schemesData, {
+import {
   filterCategories,
   filterEligibility,
   sortOptions,
@@ -116,14 +116,18 @@ export default function SchemesPage() {
   const [selectedState, setSelectedState] = useState("All India (Central)");
   const [sortBy, setSortBy] = useState("Popular");
   const [dbSchemes, setDbSchemes] = useState([]);
+  const [isLoadingSchemes, setIsLoadingSchemes] = useState(false);
+  const [schemesError, setSchemesError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!token) return;
     const fetchSchemes = async () => {
+      setIsLoadingSchemes(true);
+      setSchemesError("");
       try {
-        const response = await fetch("/api/schemes", {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api"}/schemes`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -168,6 +172,9 @@ export default function SchemesPage() {
         }
       } catch (err) {
         console.error("Error fetching schemes:", err);
+        setSchemesError(err?.message || "Unable to load schemes from the database.");
+      } finally {
+        setIsLoadingSchemes(false);
       }
     };
     fetchSchemes();
@@ -194,7 +201,7 @@ export default function SchemesPage() {
   }, [searchQuery]);
 
   const filteredSchemes = useMemo(() => {
-    let results = dbSchemes.length > 0 ? dbSchemes : [...schemesData];
+    let results = [...dbSchemes];
     const query = searchQuery.trim().toLowerCase();
 
     if (query) {
@@ -327,7 +334,15 @@ export default function SchemesPage() {
                       </div>
                     </div>
 
-                    {paginatedSchemes.length > 0 ? (
+                    {isLoadingSchemes ? (
+                      <p className="rounded-[20px] border border-border-warm bg-white px-6 py-16 text-center text-sm text-text-secondary">
+                        Loading schemes from database...
+                      </p>
+                    ) : schemesError ? (
+                      <p role="alert" className="rounded-[20px] border border-red-100 bg-red-50 px-6 py-16 text-center text-sm text-red-700">
+                        {schemesError}
+                      </p>
+                    ) : paginatedSchemes.length > 0 ? (
                       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {paginatedSchemes.map((scheme) => (
                           <SchemeCard key={scheme.id} scheme={scheme} />

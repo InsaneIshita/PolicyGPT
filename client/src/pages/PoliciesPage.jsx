@@ -4,7 +4,7 @@ import Navbar from "../components/layouts/Navbar";
 import Footer from "../components/layouts/Footer";
 import PolicyCard from "../components/policies/PolicyCard";
 import PolicyFilter from "../components/policies/PolicyFilter";
-import policiesData, { sortOptions } from "../data/policiesData";
+import { sortOptions } from "../data/policiesData";
 import { policyService } from "../services/policyService";
 import breadcrumbChevron from "../assets/icons/policies/breadcrumb-chevron.svg";
 import sortDropdownArrow from "../assets/icons/policies/sort-dropdown-arrow.svg";
@@ -77,6 +77,7 @@ export default function PoliciesPage() {
   const [sortBy, setSortBy] = useState("Popular");
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [policiesError, setPoliciesError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const token = localStorage.getItem("token");
@@ -93,6 +94,7 @@ export default function PoliciesPage() {
         setPolicies(data);
       } catch (err) {
         console.error("Failed to load policies from API:", err);
+        setPoliciesError(err?.response?.data?.message || err.message || "Unable to load policies from the database.");
       } finally {
         setLoading(false);
       }
@@ -293,7 +295,11 @@ export default function PoliciesPage() {
                       </div>
                     </div>
 
-                    {filteredPolicies.length > 0 ? (
+                    {policiesError ? (
+                      <div role="alert" className="rounded-[20px] border border-red-100 bg-red-50 px-6 py-16 text-center text-sm text-red-700">
+                        {policiesError}
+                      </div>
+                    ) : filteredPolicies.length > 0 ? (
                       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {paginatedPolicies.map((policy) => (
                           <PolicyCard key={policy.id} policy={policy} />
