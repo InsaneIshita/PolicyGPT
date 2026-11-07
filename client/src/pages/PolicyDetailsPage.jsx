@@ -48,11 +48,6 @@ export default function PolicyDetailsPage() {
     fetchPolicyDetails();
   }, [id]);
 
-  // Scroll to top when tab changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [activeTab]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-cream font-body flex flex-col justify-between">

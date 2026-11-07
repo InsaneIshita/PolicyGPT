@@ -124,10 +124,6 @@ export default function SchemeDetailsPage() {
 
     const scheme = apiScheme;
 
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }, [activeTab]);
-
     if (isLoading) {
         return (
             <div className="min-h-screen bg-cream flex flex-col justify-between">
